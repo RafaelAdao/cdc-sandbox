@@ -17,7 +17,7 @@ docker run -it --rm --name kafka -p 9092:9092 --link zookeeper:zookeeper quay.io
 ## Starting a Postgres database
 
 ```sh
-docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres -v ./postgresql.conf:/etc/postgresql/postgresql.conf postgres -c config_file=/etc/postgresql/postgresql.conf
+docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_USER=postgres -v ./postgresql.conf:/etc/postgresql/postgresql.conf postgres -c config_file=/etc/postgresql/postgresql.conf
 ```
 
 ### Setup database schema and initial data
@@ -25,8 +25,9 @@ docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=postgres -
 ```sh
 docker exec -it postgres psql -U postgres
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE DATABASE cdc_sandbox_experiment_1;
+\c cdc_sandbox_experiment_1;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE my_table (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -55,7 +56,7 @@ curl -H "Accept:application/json" localhost:8083/connectors/
 
 ## Deploying the Postgres connector
 
-### WIP Registering a connector to monitor the cdc_sandbox_experiment_1 database
+### Registering a connector to monitor the cdc_sandbox_experiment_1 database
 
 ```sh
 curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/ -d '{
@@ -67,40 +68,22 @@ curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" 
     "database.port": "5432",
     "database.user": "postgres",
     "database.password": "postgres",
-    "database.dbname": "cdc_sandbox_experiment_1",
+    "database.dbname" : "cdc_sandbox_experiment_1",
     "topic.prefix": "xp-1",
-    "table.include.list": "public.my_table",
-    "schema.history.internal.kafka.bootstrap.servers": "kafka:9092",
-    "schema.history.internal.kafka.topic": "schemahistory.inventory",
-    "plugin.name": "pgoutput",
-    "snapshot.mode": "always"
+    "schema.include.list": "public",
+    "plugin.name": "pgoutput"
   }
 }'
 
 curl -H "Accept:application/json" localhost:8083/connectors/
 curl -i -X GET -H "Accept:application/json" localhost:8083/connectors/experiment-1-connector
 # curl -i -X DELETE -H "Accept:application/json" localhost:8083/connectors/experiment-1-connector
-
-
-curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/ -d '{
-  "name": "experiment-1-connector",
-  "config": {
-    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
-    "database.hostname": "postgres",
-    "database.port": "5432",
-    "database.user": "postgres",
-    "database.password": "postgres",
-    "database.dbname" : "cdc_sandbox_experiment_1",
-    "topic.prefix": "xp-1",
-    "table.include.list": "public.my_table"
-  }
-}'
 ```
 
 ## Watch data changes
 
 ```sh
-docker run -it --rm --name watcher --link zookeeper:zookeeper --link kafka:kafka quay.io/debezium/kafka:2.1 watch-topic -a -k xp-1.cdc_sandbox_experiment_1.my_table
+docker run -it --rm --name watcher --link zookeeper:zookeeper --link kafka:kafka quay.io/debezium/kafka:2.1 watch-topic -a -k xp-1.public.my_table
 ```
 
 ### Updating the database and viewing the update event
