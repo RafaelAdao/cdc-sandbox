@@ -1,4 +1,15 @@
 # WIP
+- [x] Starting Zookeeper
+- [x] Starting Kafka
+- [x] Starting a Postgres database
+  - [x] Setup database schema and initial data
+- [x] Starting Kafka Connect
+- [x] Deploying the Postgres connector
+  - [x] Registering a connector to monitor the cdc_sandbox_experiment_1 database
+- [x] Watch data changes
+  - [x] Updating the database and viewing the update event
+- [x] Cleaning up
+- [ ] Move all parts to a docker-compose
 
 # Walk through with Postgres
 
