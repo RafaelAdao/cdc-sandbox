@@ -10,6 +10,8 @@
   - [x] Updating the database and viewing the update event
 - [x] Cleaning up
 - [ ] Move all parts to a docker-compose
+- [ ] Elasticsearch
+- [ ] Apache Beam
 
 # Walk through with Postgres
 
