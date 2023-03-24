@@ -1,0 +1,15 @@
+{
+  "name": "experiment-1-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "postgres",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "postgres",
+    "database.dbname" : "cdc_sandbox_experiment_1",
+    "topic.prefix": "xp-1",
+    "schema.include.list": "public",
+    "plugin.name": "pgoutput"
+  }
+}

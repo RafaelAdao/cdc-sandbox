@@ -1,0 +1,49 @@
+version: '3.1'
+services:
+  zookeeper:
+    image: debezium/zookeeper:2.1
+    container_name: zookeeper
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+  kafka:
+    image: debezium/kafka:2.1
+    container_name: kafka
+    environment:
+      ZOOKEEPER_CONNECT: zookeeper:2181
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+  postgres:
+    image: postgres:15.2-alpine3.17
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: postgres
+    volumes:
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: -c config_file=/etc/postgresql/postgresql.conf
+  connect:
+    image: debezium/connect:2.1
+    container_name: connect
+    ports:
+      - 8083:8083
+    environment:
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: my_connect_configs
+      OFFSET_STORAGE_TOPIC: my_connect_offsets
+      STATUS_STORAGE_TOPIC: my_connect_statuses
+      BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_GROUP_ID: connect-cluster
+      KAFKA_OFFSET_STORAGE_TOPIC: connect-cluster-offsets
+      KAFKA_CONFIG_STORAGE_TOPIC: connect-cluster-configs
+      KAFKA_STATUS_STORAGE_TOPIC: connect-cluster-status
+    depends_on:
+      - kafka
+      - postgres
