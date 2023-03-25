@@ -61,6 +61,21 @@ docker exec -it postgres psql -U postgres -d cdc_sandbox_experiment_1
 UPDATE my_table SET value = value * 2;
 ```
 
+## Setup elasticsearch indice
+
+```sh
+curl -XPUT "http://localhost:9200/xp-1" -H "kbn-xsrf: reporting" -H "Content-Type: application/json" -d'
+{
+  "mappings": {
+    "properties": {
+      "id": { "type": "keyword" },
+      "description": {"type": "text"},
+      "value": {"type": "double"}
+    }
+  }
+}'
+```
+
 ## Cleaning up
 
 ```sh
