@@ -10,7 +10,7 @@
   - [x] Updating the database and viewing the update event
 - [x] Cleaning up
 - [x] Move all parts to a docker-compose
-- [ ] Apache Beam
+- [x] Apache Beam consuming the Kafka topic
 - [ ] Writing on a Elasticsearch index
   - [ ] setup elasticsearch
   - [ ] writing on the index
