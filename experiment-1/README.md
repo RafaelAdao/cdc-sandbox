@@ -11,7 +11,9 @@
 - [x] Cleaning up
 - [x] Move all parts to a docker-compose
 - [ ] Apache Beam
-- [ ] Elasticsearch
+- [ ] Writing on a Elasticsearch index
+  - [ ] setup elasticsearch
+  - [ ] writing on the index
 
 # Walk through with Postgres
 
