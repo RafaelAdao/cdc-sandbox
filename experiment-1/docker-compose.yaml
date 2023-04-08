@@ -60,7 +60,7 @@ services:
     mem_limit: 1024m
     environment:
       - "xpack.security.enabled=false"
-      - "node.name=es-contact-management-01"
+      - "node.name=es-cdc-experiments-01"
       - "cluster.name=es-docker-cluster"
       - "discovery.type=single-node"
     ports:

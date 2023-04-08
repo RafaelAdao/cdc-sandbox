@@ -11,9 +11,15 @@
 - [x] Cleaning up
 - [x] Move all parts to a docker-compose
 - [x] Apache Beam consuming the Kafka topic
-- [ ] Writing on a Elasticsearch index
-  - [ ] setup elasticsearch
-  - [ ] writing on the index
+- [x] Writing on a Elasticsearch index
+  - [x] setup elasticsearch
+  - [x] writing on the index
+  - [ ] add timestamp to the index
+  - [ ] add derived fields
+  - [ ] CUD operations
+  - [ ] handle failures
+- [ ] Logstash Kafka output plugin
+- [ ] Clean Code
 
 # Walk through with Postgres
 
