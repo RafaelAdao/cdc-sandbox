@@ -64,7 +64,7 @@ UPDATE my_table SET value = value * 2;
 ## Setup elasticsearch indice
 
 ```sh
-curl -XPUT "http://localhost:9200/xp-1" -H "kbn-xsrf: reporting" -H "Content-Type: application/json" -d'
+curl -XPUT "http://localhost:9210/xp-1" -H "kbn-xsrf: reporting" -H "Content-Type: application/json" -d'
 {
   "mappings": {
     "properties": {
