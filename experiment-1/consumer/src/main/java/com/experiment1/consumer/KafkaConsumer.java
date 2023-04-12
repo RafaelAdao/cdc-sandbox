@@ -71,7 +71,7 @@ public class KafkaConsumer {
           @ProcessElement
           public void processElement(ProcessContext c) {
             var element = c.element();
-            System.out.printf("Successfully wrote document: %s\n", element);
+            logger.info("Successfully wrote document: {}\n", element);
           }
         }));
   }
