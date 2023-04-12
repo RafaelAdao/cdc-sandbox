@@ -41,9 +41,15 @@ public class KafkaConsumer {
         var element = c.element();
         var change = new Gson().fromJson(element.get("change"), JsonObject.class);
         var output = new JsonObject();
+
         output.add("id", change.get("id"));
         output.add("description", change.get("description"));
         output.add("value", change.get("value"));
+        output.addProperty("timestamp",
+            new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                .format(new java.util.Date(change.get("timestamp").getAsLong() / 1000)));
+        output.addProperty("derived", change.get("value").getAsDouble() * 2);
+
         c.output(output.toString());
       }
     }));

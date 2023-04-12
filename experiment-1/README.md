@@ -14,8 +14,8 @@
 - [x] Writing on a Elasticsearch index
   - [x] setup elasticsearch
   - [x] writing on the index
-  - [ ] add timestamp to the index
-  - [ ] add derived fields
+  - [x] add timestamp to the index
+  - [x] add derived field to the index
   - [ ] CUD operations
   - [ ] handle failures
 - [ ] Logstash Kafka output plugin
@@ -76,7 +76,9 @@ curl -XPUT "http://localhost:9210/xp-1" -H "kbn-xsrf: reporting" -H "Content-Typ
     "properties": {
       "id": { "type": "keyword" },
       "description": {"type": "text"},
-      "value": {"type": "double"}
+      "value": {"type": "double"},
+      "timestamp": {"type": "date"},
+      "derived": {"type": "double"}
     }
   }
 }'
