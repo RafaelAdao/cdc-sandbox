@@ -40,9 +40,16 @@ public class KafkaConsumer {
       public void processElement(ProcessContext c) {
         var element = c.element();
         var change = new Gson().fromJson(element.get("change"), JsonObject.class);
+        var isDeleted = element.get("operation").equals("delete");// skip truncate for now
         var output = new JsonObject();
 
         output.add("id", change.get("id"));
+        output.addProperty("is_deleted", isDeleted);
+        if (isDeleted) {
+          c.output(output.toString());
+          return;
+        }
+
         output.add("description", change.get("description"));
         output.add("value", change.get("value"));
         output.addProperty("timestamp",
@@ -64,7 +71,14 @@ public class KafkaConsumer {
               public String apply(JsonNode input) {
                 return input.get("id").asText();
               }
-            }));
+            })
+            .withIsDeleteFn(
+                new ElasticsearchIO.Write.BooleanFieldValueExtractFn() {
+                  @Override
+                  public Boolean apply(JsonNode input) {
+                    return input.get("is_deleted").asBoolean();
+                  }
+                }));
     output
         .get(ElasticsearchIO.Write.SUCCESSFUL_WRITES)
         .apply(ParDo.of(new DoFn<ElasticsearchIO.Document, Void>() {
@@ -81,6 +95,8 @@ public class KafkaConsumer {
       @ProcessElement
       public void processElement(ProcessContext c) {
         KV<String, String> record = c.element();
+        if (record.getValue() == null)
+          return;
         JsonObject value = new Gson().fromJson(record.getValue(), JsonObject.class);
         var payload = value.getAsJsonObject("payload");
         String table = payload.getAsJsonObject("source").get("table").getAsString();
@@ -94,7 +110,12 @@ public class KafkaConsumer {
             put("m", "message");
           }
         }.get(payload.get("op").getAsString());
-        var change = payload.getAsJsonObject("after");
+        JsonObject change = null;
+        if (operation.equals("delete")) {
+          change = payload.getAsJsonObject("before");
+        } else {
+          change = payload.getAsJsonObject("after");
+        }
 
         var output = new HashMap<String, String>();
         output.put("operation", operation);
