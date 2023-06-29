@@ -29,16 +29,16 @@
 docker-compose up -d
 ```
 
-### Check the xp-1.public.my_table topic was created
-
-```sh
-docker exec kafka ./bin/kafka-topics.sh --bootstrap-server kafka:9092 --list
-```
-
 ## Deploying the Postgres connector to monitor the cdc_sandbox_experiment_1 database
 
 ```sh
 curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/ -d @register-postgres.json
+```
+
+### Check the xp-1.public.my_table topic was created
+
+```sh
+docker exec kafka ./bin/kafka-topics.sh --bootstrap-server kafka:9092 --list
 ```
 
 ### Check the connector status
@@ -83,6 +83,31 @@ curl -XPUT "http://localhost:9210/xp-1" -H "kbn-xsrf: reporting" -H "Content-Typ
     }
   }
 }'
+```
+
+## Run Java KafkaConsumer application
+
+```sh
+cd consumer
+make run
+```
+
+## Watch the data output on consumer
+
+- update the database
+
+```sh
+docker exec -it postgres psql -U postgres -d cdc_sandbox_experiment_1
+```
+
+```sql
+UPDATE my_table SET value = value * 2;
+```
+
+## Watch the data output on elasticsearch
+
+```sh
+curl -XGET "http://localhost:9210/xp-1/_search?pretty"
 ```
 
 ## Cleaning up
