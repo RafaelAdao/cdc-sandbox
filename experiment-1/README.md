@@ -18,7 +18,7 @@
   - [x] add derived field to the index
   - [x] CUD operations
   - [-] handle failures #skip for now
-- [ ] Logstash Kafka output plugin
+- [ ] Percolate
 - [ ] Clean Code
 
 # Walk through with Postgres
