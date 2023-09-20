@@ -61,6 +61,8 @@ services:
       - "node.name=es-cdc-experiments-01"
       - "cluster.name=es-docker-cluster"
       - "discovery.type=single-node"
+    volumes:
+      - ./elasticsearch-plugins.yml:/usr/share/elasticsearch/config/elasticsearch-plugins.yml
     ports:
       - '9210:9200'
     ulimits:

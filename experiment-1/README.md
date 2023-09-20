@@ -80,6 +80,9 @@ curl -XPUT "http://localhost:9210/xp-1" -H "kbn-xsrf: reporting" -H "Content-Typ
       "timestamp": {"type": "date"},
       "derived": {"type": "double"},
       "is_deleted": {"type": "boolean"}
+    },
+    "_size": {
+      "enabled": true
     }
   }
 }'
